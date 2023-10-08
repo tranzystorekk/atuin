@@ -21,12 +21,14 @@ use atuin_client::{
     settings::{ExitMode, FilterMode, SearchMode, Settings},
 };
 
-use super::{
-    cursor::Cursor,
+use crate::{
     engines::{SearchEngine, SearchState},
-    history_list::{HistoryList, ListState, PREFIX_LENGTH},
+    interactive::{
+        cursor::Cursor,
+        history_list::{HistoryList, ListState, PREFIX_LENGTH},
+    },
+    VERSION,
 };
-use crate::{command::client::search::engines, VERSION};
 use ratatui::{
     backend::{Backend, CrosstermBackend},
     layout::{Alignment, Constraint, Direction, Layout},
@@ -230,7 +232,7 @@ impl State {
             KeyCode::Char('s') if ctrl => {
                 self.switched_search_mode = true;
                 self.search_mode = self.search_mode.next(settings);
-                self.engine = engines::engine(self.search_mode);
+                self.engine = crate::engines::engine(self.search_mode);
             }
             KeyCode::Down if !settings.invert && self.results_state.selected() == 0 => {
                 return Some(match settings.exit_mode {
@@ -644,7 +646,7 @@ pub async fn history(
             },
             context,
         },
-        engine: engines::engine(search_mode),
+        engine: crate::engines::engine(search_mode),
         results_len: 0,
     };
 

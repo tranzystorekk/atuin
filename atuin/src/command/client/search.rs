@@ -11,12 +11,7 @@ use atuin_client::{
 
 use super::history::ListMode;
 
-mod cursor;
-mod duration;
-mod engines;
-mod history_list;
-mod interactive;
-pub use duration::{format_duration, format_duration_into};
+pub use crate::utils::duration::{format_duration, format_duration_into};
 
 #[allow(clippy::struct_excessive_bools)]
 #[derive(Parser, Debug)]
@@ -129,7 +124,7 @@ impl Cmd {
         settings.shell_up_key_binding = self.shell_up_key_binding;
 
         if self.interactive {
-            let item = interactive::history(&self.query, settings, db).await?;
+            let item = crate::interactive::search::history(&self.query, settings, db).await?;
             eprintln!("{item}");
         } else {
             let list_mode = ListMode::from_flags(self.human, self.cmd_only);
